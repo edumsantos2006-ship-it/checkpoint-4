@@ -69,3 +69,5 @@ btn_excluir.pack(pady=20)
 janela.mainloop()
 
 
+
+

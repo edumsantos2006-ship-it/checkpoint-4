@@ -26,38 +26,43 @@ def criar_tabela():
     
 
 def inserir_produto(nome, preco, quantidade):
-    conexao = conectar()
-    cursor = conexao.cursor()
+    with conectar() as conexao:
 
-    cursor.execute("INSERT INTO produtos (nome, preco, quantidade) VAlUES (?, ?, ?)", (nome, preco, quantidade))
-    conexao.commit()
+        cursor = conexao.cursor()
+        cmd_sql = "INSERT INTO produtos (nome, preco, quantidade) VAlUES (?, ?, ?)"
+        cursor.execute(cmd_sql, (nome, preco, quantidade))
+        
+        conexao.commit()
+
 
 
 def buscar_produtos():
-    conexao = conectar()
-    cursor = conexao.cursor()
+    with conectar() as conexao:
 
-    cursor.execute("SELECT * FROM produtos")
+        cursor = conexao.cursor()
 
-    dados = cursor.fetchall()
+        cursor.execute("SELECT * FROM produtos")
 
-    conexao.close()
-    return dados
+        dados = cursor.fetchall()
+
+        conexao.close()
+        return dados
 
 
 def atualizar_preco(id_produto,novo_preco):
-    nomes = buscar_produtos()
+    with conectar() as conexao:
+        cursor = conexao.cursor()
 
-    for nome in nomes:
-        texto = f"ID: {nome[0]} | Nome:{nome[1]} | preco:{nome[2]} | quantidade:{nome[3]}"
+        cursor.execute("UPDATE produtos SET preco = ? WHERE id = ?",(novo_preco, id_produto))
+        
+        conexao.commit()
+    
+def deletar_produtos(id_dig):
+    with conectar() as conexao:
+        cursor = conexao.cursor()
 
-
-def deletar_produtos(id_produto):
-    conexao = conectar()
-    cursor = conexao.cursor()
-
-    cursor.execute("DELETE FROM produtos WHERE id =?")
-    conexao.commit()
+        cursor.execute("DELETE FROM produtos WHERE id =?",(id_dig,))
+        conexao.commit()
 
 
 if __name__ == "__main__":
