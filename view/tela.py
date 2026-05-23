@@ -1,5 +1,9 @@
 import customtkinter as ctk
-from controller.controle import processar_cadastro
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from controller.controle import processar_cadastro, excluir_produto, atualizar_vitrine
+from model.modelo import buscar_produtos
+
 
 def btn_verificar_salvar():
     nome_digitado = cx_nome.get()
@@ -8,8 +12,63 @@ def btn_verificar_salvar():
 
     if processar_cadastro(nome_digitado, preco_digitado, quant_digitado):
         lbl_aviso.configure(text="Produto cadastrado com sucesso!", text_color="green")
+        atualizar()
     else:
         lbl_aviso.configure(text="O nome do produto não pode estar vazio!", text_color="red")
+
+def excluir():
+    id_digitado = cx_excluir_id.get()
+    if excluir_produto(id_digitado):
+        lbl_aviso.configure(text="Produto excluido com sucesso!", text_color="green")
+        atualizar()
+    else:
+        lbl_aviso.configure(text="ID não encontrado!!", text_color="red")
+
+def atualizar():
+    area_lista.delete("0.0", "end")
+
+    texto = atualizar_vitrine()
+
+    area_lista.insert("end", texto)
+
+def grafico():
+    dados = buscar_produtos()
+
+    nome = []
+    preco = []
+    quantidade = []
+
+    for dado in dados:
+        nome.append(dado[1])
+        preco.append(dado[2])
+        quantidade.append(dado[3])
+
+    figura, ax = plt.subplots(figsize=(7, 5))
+
+    ax.bar(nome, preco)
+
+    ax.set_title("preco dos produtos")
+    ax.set_xlabel("nome")
+    ax.set_ylabel("preco")
+    
+    canvas = FigureCanvasTkAgg(figura, master=frama_grafico)
+    canvas.draw()
+    canvas.get_tk_widget().pack(pady=20)
+
+    figura, ax = plt.subplots(figsize=(7, 5))
+
+    ax.bar(nome, quantidade)
+
+    ax.set_title("quantidade de produtos")
+    ax.set_xlabel("nome")
+    ax.set_ylabel("quantidade")
+    
+    canvas = FigureCanvasTkAgg(figura, master=frama_grafico)
+    canvas.draw()
+    canvas.get_tk_widget().pack(pady=20)
+    
+
+
 
 janela = ctk.CTk()
 janela.geometry("700x500")
@@ -50,6 +109,7 @@ area_lista = ctk.CTkTextbox(
 )
 area_lista.pack(pady=10)
 
+
 gravar_produto = ctk.CTkButton(janela,
     text="cadastrar produto", 
     command=btn_verificar_salvar
@@ -61,10 +121,24 @@ cx_excluir_id = ctk.CTkEntry(form, placeholder_text="ID p/ excluir ")
 cx_excluir_id.pack(pady=5)
 
 btn_excluir = ctk.CTkButton(
-    form,text="exluir Produto",
+    form,text="excluir Produto",
     fg_color="red", hover_color="darkred",
+    command=excluir
     )
 btn_excluir.pack(pady=20)
+
+
+frama_grafico = ctk.CTkFrame(janela)
+frama_grafico.pack(fill="both", expand=True, padx=10, pady=10)
+
+btn_gerar_grafico = ctk.CTkButton(
+    form, 
+    text="ver gráfico",
+    command=grafico
+)
+btn_gerar_grafico.pack(pady=20)
+
+atualizar()
 
 janela.mainloop()
 

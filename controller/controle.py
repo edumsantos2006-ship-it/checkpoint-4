@@ -1,4 +1,4 @@
-from model.modelo import inserir_produto, deletar_produtos, atualizar_preco, buscar_produtos
+from model.modelo import inserir_produto, deleta_produtos, atualizar_preco, buscar_produtos
 
 def processar_cadastro(nome, preco_txt, quant_txt):
     if nome == "" or preco_txt == "" or quant_txt == "":
@@ -19,8 +19,13 @@ def excluir_produto(id_dig):
     if id_dig == "": 
         print("Erro")
         return False
- 
-    deletar_produtos(id_dig)
+    try:
+        id_dig = int(id_dig)
+    except ValueError:
+        print("ID invalido")
+        return False
+    
+    deleta_produtos(id_dig)
     return True
     
 def atualizar_vitrine():
@@ -28,6 +33,6 @@ def atualizar_vitrine():
     texto = ""
 
     for nome in nomes:
-        texto = f"ID: {nome[0]} | Nome:{nome[1]} | preco:{nome[2]} | quantidade:{nome[3]}\n"
+        texto += f"ID: {nome[0]} | Nome:{nome[1]} | preco:{nome[2]} | quantidade:{nome[3]}\n"
     
     return texto

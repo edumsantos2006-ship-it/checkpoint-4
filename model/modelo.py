@@ -45,8 +45,8 @@ def buscar_produtos():
 
         dados = cursor.fetchall()
 
-        conexao.close()
-        return dados
+        
+    return dados
 
 
 def atualizar_preco(id_produto,novo_preco):
@@ -57,7 +57,7 @@ def atualizar_preco(id_produto,novo_preco):
         
         conexao.commit()
     
-def deletar_produtos(id_dig):
+def deleta_produtos(id_dig):
     with conectar() as conexao:
         cursor = conexao.cursor()
 
