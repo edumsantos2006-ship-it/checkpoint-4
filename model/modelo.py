@@ -19,7 +19,7 @@ def criar_tabela():
          """ )
         conexao.commit()
     
-    except sqlite3. Error as erro:
+    except sqlite3.Error as erro:
         print(f"Houve um erro: {erro}")
     finally:
         conexao.close()
@@ -57,12 +57,14 @@ def atualizar_preco(id_produto,novo_preco):
         
         conexao.commit()
     
-def deleta_produtos(id_dig):
+def deletar_produto(id_dig):
     with conectar() as conexao:
         cursor = conexao.cursor()
 
         cursor.execute("DELETE FROM produtos WHERE id =?",(id_dig,))
         conexao.commit()
+
+        return cursor.rowcount
 
 
 if __name__ == "__main__":
